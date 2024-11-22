@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Data Collection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        select, input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function updateWasteTypes() {
+            const wasteCategory = document.getElementById('biodegradable').value;
+            const wasteTypeSelect = document.getElementById('waste-type');
+            wasteTypeSelect.innerHTML = '';
+
+            const options = wasteCategory === 'Biodegradable' ? 
+                ['Food - Morning', 'Food - Afternoon', 'Food - Evening', 'Paper', 'Wood', 'Other Waste'] :
+                ['Plastic', 'Metal', 'Glass', 'Electronic Waste', 'Other Non-Biodegradable Waste'];
+
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option;
+                opt.textContent = option;
+                wasteTypeSelect.appendChild(opt);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Waste Data Collection (கழிவு தரவு சேகரிப்பு)</h1>
+        <form id="wasteForm">
+            <label for="date">Date (தேதி):</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="building">Building Name (கட்டிடம் பெயர்):</label>
+            <select id="building" name="building" required>
+                <option value="">Select Building (கட்டிடத்தை தேர்ந்தெடுக்கவும்)</option>
+                <option value="Building A">Technology Block I (தொழில்நுட்பக் கட்டிடம் I)</option>
+                <option value="Building B">Technology Block II (தொழில்நுட்பக் கட்டிடம் II)</option>
+                <option value="PKC">PKC</option>
+                <option value="PKC Extension">PKC Extension(விரிவாக்கம்)</option>
+                <option value="Indoor Stadium">Indoor Stadium(இன்டோர் ஸ்டேடியம்)</option>
+                <option value="vittobai Hostel">Vittobai Hostel(வித்தோபை விடுதி)</option>
+                <option value="Architecture Block">Architecture Block(வடிவமைப்பு கட்டிடம்)</option>
+                <option value="B.Ed Block">B.Ed Block(பி.ஈ.டி. கட்டிடம்)</option>
+                <option value="Nagammair Hostel">Nagammaiar Hostel(நாகம்மைர் விடுதி)</option>
+                <option value="charavarthi Hostel">Chakkaravarthi Hostel(சக்ரவர்த்தி விடுதி)</option>
+                <option value="Staff Quarters">Staff Quaters(பணியாளர் குடியிருப்பு)</option>
+            </select>
+
+            <label for="biodegradable">Waste Category (கழிவு வகை):</label>
+            <select id="biodegradable" name="biodegradable" onchange="updateWasteTypes()" required>
+                <option value="">Select Category (வகையை தேர்ந்தெடுக்கவும்)</option>
+                <option value="Biodegradable">Biodegradable (பாரம்பரிய கழிவு)</option>
+                <option value="Non-Biodegradable">Non-Biodegradable (பாரம்பரிய அல்லாத கழிவு)</option>
+            </select>
+
+            <label for="waste-type">Waste Type (கழிவு வகை):</label>
+            <select id="waste-type" name="waste-type" required>
+                <option value="">Select Waste Type (கழிவு வகையை தேர்ந்தெடுக்கவும்)</option>
+            </select>
+
+            <label for="waste-weight">Waste Weight (kg) (கழிவு எடை (கி.கி)): </label>
+            <input type="number" id="waste-weight" name="waste-weight" step="0.01" placeholder="Enter weight in kg (கி.கி இல் எடையை உள்ளிடவும்)" required>
+
+            <button type="button" onclick="submitForm()">Submit (சமர்ப்பிக்கவும்)</button>
+        </form>
+    </div>
+    <script>
+        async function submitForm() {
+            const form = document.getElementById('wasteForm');
+            const formData = new FormData(form);
+
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch('http://localhost:3000/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.text();
+            alert(result);
+        }
+    </script>
+</body>
+</html>
